@@ -5,12 +5,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
-    <Authors>Simon Cropp</Authors>
-    <Description>Add property notification to all classes that implement INotifyPropertyChanged.</Description>
+    <Authors>Simon Cropp;Alex Bondarev</Authors>
+    <Description>StrangeLoopGames fork of Fody.PropertyChanged. Add property notification to all classes that implement INotifyPropertyChanged.</Description>
+    <PackageId>StrangeLoopGames.PropertyChanged.Fody</PackageId>
     <PackageTags>Xaml, MVVM, INotifyPropertyChanged, DataBinding, ILWeaving, Cecil</PackageTags>
     <PackageOutputPath>$(SolutionDir)nugets</PackageOutputPath>
-    <PackageIconUrl>https://raw.githubusercontent.com/Fody/PropertyChanged/master/package_icon.png</PackageIconUrl>
-    <PackageProjectUrl>https://github.com/Fody/PropertyChanged</PackageProjectUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/StrangeLoopGames/PropertyChanged/master/package_icon.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/StrangeLoopGames/PropertyChanged</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
   <ItemGroup>
