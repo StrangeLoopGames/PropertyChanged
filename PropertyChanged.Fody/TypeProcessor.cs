@@ -19,7 +19,7 @@ public partial class ModuleWeaver
 
             WriteDebug("\t" + node.TypeDefinition.FullName);
 
-            foreach (var propertyData in node.PropertyDatas)
+            foreach (var propertyData in node.PropertyDatas.Values)
             {
                 var body = propertyData.PropertyDefinition.SetMethod.Body;
 

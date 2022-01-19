@@ -217,8 +217,7 @@ public partial class ModuleWeaver
 
         bool PropertyWillBeNotified(PropertyDefinition p)
         {
-            return notifyNode.PropertyDatas
-                .Any(pd => pd.PropertyDefinition == p || pd.AlsoNotifyFor.Contains(p));
+            return notifyNode.PropertyDatas.ContainsKey(p) || notifyNode.PropertyDatas.Values.Any(pd => pd.AlsoNotifyFor.Contains(p));
         }
 
         if (onChangedMethod.Properties.Any(PropertyWillBeNotified))

@@ -9,7 +9,7 @@ public class TypeNode
         Nodes = new List<TypeNode>();
         PropertyDependencies = new List<PropertyDependency>();
         Mappings = new List<MemberMapping>();
-        PropertyDatas = new List<PropertyData>();
+        PropertyDatas = new Dictionary<PropertyDefinition, PropertyData>();
     }
 
     public TypeDefinition TypeDefinition;
@@ -18,7 +18,7 @@ public class TypeNode
     public List<MemberMapping> Mappings;
     public EventInvokerMethod EventInvoker;
     public MethodReference IsChangedInvoker;
-    public List<PropertyData> PropertyDatas;
+    public Dictionary<PropertyDefinition, PropertyData> PropertyDatas;
     public List<PropertyDefinition> AllProperties;
     public ICollection<OnChangedMethod> OnChangedMethods;
     public IEnumerable<PropertyDefinition> DeclaredProperties => AllProperties.Where(prop => prop.DeclaringType == TypeDefinition);
