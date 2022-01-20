@@ -10,6 +10,7 @@ public class TypeNode
         PropertyDependencies = new List<PropertyDependency>();
         Mappings = new List<MemberMapping>();
         PropertyDatas = new Dictionary<PropertyDefinition, PropertyData>();
+        NoOwnNotifyProperties = new HashSet<PropertyDefinition>();
     }
 
     public TypeDefinition TypeDefinition;
@@ -21,5 +22,6 @@ public class TypeNode
     public Dictionary<PropertyDefinition, PropertyData> PropertyDatas;
     public List<PropertyDefinition> AllProperties;
     public ICollection<OnChangedMethod> OnChangedMethods;
+    public HashSet<PropertyDefinition> NoOwnNotifyProperties; // these properties won't emit PropertyChanged event, but still may notify dependent properties or invoke on change methods
     public IEnumerable<PropertyDefinition> DeclaredProperties => AllProperties.Where(prop => prop.DeclaringType == TypeDefinition);
 }
