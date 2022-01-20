@@ -168,6 +168,8 @@ public static class CecilExtensions
         return attributes.Any(attribute => attribute.Constructor.DeclaringType.FullName == attributeName);
     }
 
+    public static IEnumerable<string> Names(this IEnumerable<CustomAttribute> attributes) => attributes.Select(a => a.Constructor.DeclaringType.FullName);
+
     public static IEnumerable<TypeReference> GetAllInterfaces(this TypeDefinition type)
     {
         while (type != null)
