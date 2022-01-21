@@ -9,13 +9,13 @@ public partial class ModuleWeaver
     {
         foreach (var node in notifyNodes)
         {
-            foreach (var propertyData in node.PropertyDatas.ToList())
+            foreach (var propertyData in node.PropertyDatas.Values.ToList())
             {
                 var warning = CheckForWarning(propertyData, node.EventInvoker.InvokerType);
                 if (warning != null)
                 {
                     EmitConditionalWarning(propertyData.PropertyDefinition, $"{propertyData.PropertyDefinition.GetName()} {warning} Property will be ignored.");
-                    node.PropertyDatas.Remove(propertyData);
+                    node.PropertyDatas.Remove(propertyData.PropertyDefinition);
                 }
             }
             CheckForWarnings(node.Nodes);

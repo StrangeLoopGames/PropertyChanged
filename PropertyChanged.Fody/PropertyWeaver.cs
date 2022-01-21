@@ -143,6 +143,9 @@ public class PropertyWeaver
     int AddEventInvokeCall(int index, List<OnChangedMethod> onChangedMethods, PropertyDefinition property)
     {
         index = AddOnChangedMethodCalls(index, onChangedMethods, property);
+        if (propertyData.ParentType.NoOwnNotifyProperties.Contains(property))
+            return index;
+
         if (propertyData.AlreadyNotifies.Contains(property.Name))
         {
             moduleWeaver.WriteDebug($"\t\t\t{property.Name} skipped since call already exists");

@@ -28,7 +28,7 @@ public partial class ModuleWeaver
 
     void FindComparisonMethods(TypeNode node)
     {
-        foreach (var data in node.PropertyDatas)
+        foreach (var data in node.PropertyDatas.Values)
         {
             data.EqualsMethod = FindTypeEquality(data);
         }

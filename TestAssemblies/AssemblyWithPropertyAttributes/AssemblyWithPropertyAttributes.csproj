@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net48;net6</TargetFrameworks>
+    <NoWarn>0067</NoWarn>
+    <DisableFody>true</DisableFody>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\PropertyChanged\PropertyChanged.csproj" />
+  </ItemGroup>
+
+</Project>

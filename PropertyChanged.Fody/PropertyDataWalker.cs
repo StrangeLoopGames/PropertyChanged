@@ -46,7 +46,7 @@ public partial class ModuleWeaver
             {
                 return;
             }
-            node.PropertyDatas.Add(new PropertyData
+            node.PropertyDatas.Add(propertyDefinition, new PropertyData
             {
                 ParentType = node,
                 BackingFieldReference = backingFieldReference,
@@ -64,7 +64,7 @@ public partial class ModuleWeaver
 Looked for 'PropertyChanged', 'propertyChanged', '_PropertyChanged' and '_propertyChanged'.
 The most likely cause is that you have implemented a custom event accessor for the PropertyChanged event and have called the PropertyChangedEventHandler something stupid.");
         }
-        node.PropertyDatas.Add(new PropertyData
+        node.PropertyDatas.Add(propertyDefinition, new PropertyData
         {
             ParentType = node,
             BackingFieldReference = backingFieldReference,
