@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using PropertyChanged;
 
+/// <summary>Test class for processors working with property attributes (i.e. NoOwnNotifyProcessing).</summary>
 public class ClassWithAttributedProperties : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;

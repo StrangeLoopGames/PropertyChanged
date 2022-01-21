@@ -168,6 +168,7 @@ public static class CecilExtensions
         return attributes.Any(attribute => attribute.Constructor.DeclaringType.FullName == attributeName);
     }
 
+    /// <summary>Returns full type names for custom <paramref name="attributes"/>.</summary>
     public static IEnumerable<string> Names(this IEnumerable<CustomAttribute> attributes) => attributes.Select(a => a.Constructor.DeclaringType.FullName);
 
     public static IEnumerable<TypeReference> GetAllInterfaces(this TypeDefinition type)
