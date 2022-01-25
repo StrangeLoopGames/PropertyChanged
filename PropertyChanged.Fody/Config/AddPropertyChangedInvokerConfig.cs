@@ -3,12 +3,12 @@ using System.Xml;
 
 public partial class ModuleWeaver
 {
-    public bool AddPropertyChangedInvoker = false;
+    public bool AddPropertyChangedInvoker;
 
     public void ResolveAddPropertyChangedInvokerConfig()
     {
         var value = Config?.Attributes("AddPropertyChangedInvoker").Select(a => a.Value).SingleOrDefault();
         if (value != null)
-            CheckForEquality = XmlConvert.ToBoolean(value.ToLowerInvariant());
+            AddPropertyChangedInvoker = XmlConvert.ToBoolean(value.ToLowerInvariant());
     }
 }

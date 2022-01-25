@@ -20,8 +20,8 @@ public partial class ModuleWeaver: BaseModuleWeaver
         BuildTypeNodes();
         CleanDoNotNotifyTypes();
         CleanCodeGenedTypes();
-        FindMethodsForNodes();
         ProcessPropertyChangedInvoker();
+        FindMethodsForNodes();
         FindIsChangedMethod();
         FindAllProperties();
         FindMappings();

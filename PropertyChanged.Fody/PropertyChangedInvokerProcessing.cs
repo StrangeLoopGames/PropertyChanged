@@ -3,8 +3,8 @@ using Mono.Cecil.Cil;
 
 public partial class ModuleWeaver
 {
-    /// <summary>Returns <see cref="MethodReference"/> to <c>PropertyChanged.INotifyPropertyChangedInvoker.InvokePropertyChanged</c> if config option 'AddPropertyChangedInvoker' set to true in Fody.PropertyChanged config.</summary>
-    MethodReference GetInvokePropertyChangedMethod()
+    /// <summary>Imports <see cref="MethodReference"/> for <c>PropertyChanged.INotifyPropertyChangedInvoker.InvokePropertyChanged</c> if config option 'AddPropertyChangedInvoker' set to true in Fody.PropertyChanged config.</summary>
+    MethodReference ImportInvokePropertyChangedInterfaceMethodReference()
     {
         var manualNotifyInterface = CecilUtils.MakeTypeReference("PropertyChanged.INotifyPropertyChangedInvoker", ModuleDefinition.GetAssemblyReference("PropertyChanged")); // make type reference for interface
         var invokePropertyChangedMethod = new MethodReference("InvokePropertyChanged", TypeSystem.VoidReference, manualNotifyInterface);                                     // make method reference for InvokePropertyChanged
@@ -16,7 +16,7 @@ public partial class ModuleWeaver
     void ProcessPropertyChangedInvoker()
     {
         if (!AddPropertyChangedInvoker) return;
-        var invokePropertyChangedMethod = GetInvokePropertyChangedMethod();
+        var invokePropertyChangedMethod = ImportInvokePropertyChangedInterfaceMethodReference();
         foreach (var typeNode in NotifyNodes)                                                             // go through all base nodes implementing IPropertyChanged
         {
             var type = typeNode.TypeDefinition;
