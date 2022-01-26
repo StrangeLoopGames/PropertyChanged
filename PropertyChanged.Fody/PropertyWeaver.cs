@@ -155,12 +155,12 @@ public class PropertyWeaver
         moduleWeaver.WriteDebug($"\t\t\t{property.Name}");
         if (typeNode.EventInvoker.InvokerType == InvokerTypes.BeforeAfterGeneric)
         {
-            return AddBeforeAfterGenericInvokerCall(index, property);
+            return AddBeforeAfterInvokerCall(index, property, property.PropertyType);
         }
 
         if (typeNode.EventInvoker.InvokerType == InvokerTypes.BeforeAfter)
         {
-            return AddBeforeAfterInvokerCall(index, property);
+            return AddBeforeAfterInvokerCall(index, property, typeSystem.ObjectReference);
         }
 
         if (typeNode.EventInvoker.InvokerType == InvokerTypes.PropertyChangedArg)
@@ -253,31 +253,11 @@ public class PropertyWeaver
         return instructions.Insert(index, CallEventInvoker(property).ToArray());
     }
 
-    int AddBeforeAfterGenericInvokerCall(int index, PropertyDefinition property)
+    int AddBeforeAfterInvokerCall(int index, PropertyDefinition property, TypeReference valueType)
     {
-        var beforeVariable = new VariableDefinition(property.PropertyType);
+        var beforeVariable = new VariableDefinition(valueType);
         setMethodBody.Variables.Add(beforeVariable);
-        var afterVariable = new VariableDefinition(property.PropertyType);
-        setMethodBody.Variables.Add(afterVariable);
-
-        index = InsertVariableAssignmentFromCurrentValue(index, property, afterVariable);
-
-        index = instructions.Insert(index,
-            Instruction.Create(OpCodes.Ldarg_0),
-            Instruction.Create(OpCodes.Ldstr, property.Name),
-            Instruction.Create(OpCodes.Ldloc, beforeVariable),
-            Instruction.Create(OpCodes.Ldloc, afterVariable));
-
-        index = instructions.Insert(index, CallEventInvoker(property).ToArray());
-
-        return AddBeforeVariableAssignment(index, property, beforeVariable);
-    }
-
-    int AddBeforeAfterInvokerCall(int index, PropertyDefinition property)
-    {
-        var beforeVariable = new VariableDefinition(typeSystem.ObjectReference);
-        setMethodBody.Variables.Add(beforeVariable);
-        var afterVariable = new VariableDefinition(typeSystem.ObjectReference);
+        var afterVariable = new VariableDefinition(valueType);
         setMethodBody.Variables.Add(afterVariable);
 
         index = InsertVariableAssignmentFromCurrentValue(index, property, afterVariable);
