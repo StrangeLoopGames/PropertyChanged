@@ -15,11 +15,9 @@ public partial class ModuleWeaver
                 throw new WeavingException(message);
             }
 
-            var methodDefinition = GetMethodDefinition(targetType, out _);
-
             return new EventInvokerMethod
             {
-                MethodReference = InjectInterceptedMethod(targetType, methodDefinition).GetGeneric(),
+                MethodReference = InjectInterceptedMethod(targetType).GetGeneric(),
                 InvokerType = InterceptorType,
                 IsVisibleFromChildren = true
             };
