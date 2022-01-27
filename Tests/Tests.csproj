@@ -28,6 +28,8 @@
     <ProjectReference Include="..\TestAssemblies\AssemblyWithDisabledTriggerDependentProperties\AssemblyWithDisabledTriggerDependentProperties.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithExternalInheritance\AssemblyWithExternalInheritance.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithInterceptor\AssemblyWithInterceptor.csproj" />
+    <ProjectReference Include="..\TestAssemblies\AssemblyWithInvokerInterceptor\AssemblyWithInvokerInterceptor.csproj" />
+    <ProjectReference Include="..\TestAssemblies\AssemblyWithInvokerBeforeAfterInterceptor\AssemblyWithInvokerBeforeAfterInterceptor.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithNonVoidOnPropertyNameChanged\AssemblyWithNonVoidOnPropertyNameChanged.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithStackOverflow\AssemblyWithStackOverflow.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithStaticOnPropertyNameChanged\AssemblyWithStaticOnPropertyNameChanged.csproj" />

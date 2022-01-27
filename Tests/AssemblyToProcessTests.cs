@@ -10,6 +10,7 @@ using Mono.Cecil.Cil;
 using Xunit;
 using Xunit.Abstractions;
 
+[Collection("AssemblyToProcess")]
 public class AssemblyToProcessTests
 {
     readonly ITestOutputHelper outputHelper;

@@ -15,11 +15,9 @@ public partial class ModuleWeaver
                 throw new WeavingException(message);
             }
 
-            var methodDefinition = GetMethodDefinition(targetType, out _);
-
             return new EventInvokerMethod
             {
-                MethodReference = InjectInterceptedMethod(targetType, methodDefinition).GetGeneric(),
+                MethodReference = InjectInterceptedMethod(targetType).GetGeneric(),
                 InvokerType = InterceptorType,
                 IsVisibleFromChildren = true
             };
@@ -105,7 +103,25 @@ public partial class ModuleWeaver
         }
 
         invokerType = InvokerTypes.PropertyChangedArg;
-        return InjectEventArgsMethod(targetType, propertyChangedField);
+        return AddPropertyChangedInvoker ? FindInvokePropertyChangedRecursively(targetType) : InjectEventArgsMethod(targetType, propertyChangedField); // if AddPropertyChangedInvoker set then reuse implementation of INotifyPropertyChangedInvoker.InvokePropertyChanged
+    }
+
+    /// <summary>Find recursively <c>InvokePropertyChanged</c> in <paramref name="targetType"/> or in it's base types.</summary>
+    MethodDefinition FindInvokePropertyChangedRecursively(TypeDefinition targetType)
+    {
+        var type = targetType;
+        do
+        {
+            foreach (var method in type.Methods)
+            {
+                if (method.Name == "InvokePropertyChanged" && method.Parameters.Count == 1 && method.Parameters[0].ParameterType.FullName == PropertyChangedEventArgsReference.FullName)
+                    return method;
+            }
+
+            type = type.BaseType?.Resolve();
+        } while (type != null);
+
+        throw new WeavingException($"Can't find InvokePropertyChanged for {targetType.FullName}");
     }
 
     MethodDefinition InjectFsharp(TypeDefinition targetType, FieldDefinition fsharpEvent)

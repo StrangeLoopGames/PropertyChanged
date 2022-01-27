@@ -171,6 +171,15 @@ public static class CecilExtensions
     /// <summary>Returns full type names for custom <paramref name="attributes"/>.</summary>
     public static IEnumerable<string> Names(this IEnumerable<CustomAttribute> attributes) => attributes.Select(a => a.Constructor.DeclaringType.FullName);
 
+    /// <summary>Returns full names for <paramref name="members"/>.</summary>
+    public static IEnumerable<string> FullNames(this IEnumerable<MemberReference> members) => members.Select(a => a.FullName);
+
+    /// <summary>Checks if <paramref name="type"/> has the <paramref name="interface"/>.</summary>
+    public static bool HasInterface(this TypeDefinition type, TypeReference @interface) => type.GetAllInterfaces().FullNames().Contains(@interface.FullName);
+
+    /// <summary>Returns <see cref="AssemblyNameReference"/> by <paramref name="assemblyName"/> like "PropertyChanged".</summary>
+    public static AssemblyNameReference GetAssemblyReference(this ModuleDefinition moduleDefinition, string assemblyName) => moduleDefinition.AssemblyReferences.SingleOrDefault(x => x.Name == assemblyName);
+
     public static IEnumerable<TypeReference> GetAllInterfaces(this TypeDefinition type)
     {
         while (type != null)
