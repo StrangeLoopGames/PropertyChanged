@@ -36,5 +36,6 @@
     <ProjectReference Include="..\TestAssemblies\AssemblyWithTypeFilter\AssemblyWithTypeFilter.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithInheritance\AssemblyWithInheritance.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithPropertyAttributes\AssemblyWithPropertyAttributes.csproj" />
+    <ProjectReference Include="..\TestAssemblies\AssemblyWithDisabledBeforeAfterForReadOnlyProperties\AssemblyWithDisabledBeforeAfterForReadOnlyProperties.csproj" />
   </ItemGroup>
 </Project>

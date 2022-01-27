@@ -155,12 +155,12 @@ public class PropertyWeaver
         moduleWeaver.WriteDebug($"\t\t\t{property.Name}");
         if (typeNode.EventInvoker.InvokerType == InvokerTypes.BeforeAfterGeneric)
         {
-            return AddBeforeAfterGenericInvokerCall(index, property);
+            return AddBeforeAfterInvokerCall(index, property, property.PropertyType);
         }
 
         if (typeNode.EventInvoker.InvokerType == InvokerTypes.BeforeAfter)
         {
-            return AddBeforeAfterInvokerCall(index, property);
+            return AddBeforeAfterInvokerCall(index, property, typeSystem.ObjectReference);
         }
 
         if (typeNode.EventInvoker.InvokerType == InvokerTypes.PropertyChangedArg)
@@ -253,44 +253,41 @@ public class PropertyWeaver
         return instructions.Insert(index, CallEventInvoker(property).ToArray());
     }
 
-    int AddBeforeAfterGenericInvokerCall(int index, PropertyDefinition property)
+    int AddBeforeAfterInvokerCall(int index, PropertyDefinition property, TypeReference valueType)
     {
-        var beforeVariable = new VariableDefinition(property.PropertyType);
+        // Check if read-only properties should not receive real before/after values (default values should be used instead).
+        // DisableBeforeAfterForReadOnlyProperties should be set to true, property should be read-only and doesn't have [ForceBeforeAfter] attribute
+        if (moduleWeaver.DisableBeforeAfterForReadOnlyProperties && property.SetMethod == null && !property.CustomAttributes.ContainsAttribute("PropertyChanged.ForceBeforeAfterAttribute"))
+        {
+            VariableDefinition defaultValue = null;                                          // OnPropertyChanged(
+            instructions.Insert(index++, Instruction.Create(OpCodes.Ldarg_0));               //   this
+            instructions.Insert(index++, Instruction.Create(OpCodes.Ldstr, property.Name));  //  ,propertyName
+            index = instructions.InsertDefault(index, valueType, ref defaultValue);          //  ,default
+            index = instructions.InsertDefault(index, valueType, ref defaultValue);          //  ,default
+            // in some cases default value may require intermediate local variable
+            if (defaultValue != null)
+                setMethodBody.Variables.Add(defaultValue);
+
+            return instructions.Insert(index, CallEventInvoker(property).ToArray());         // )
+        }
+
+        // Default weaving with before/after
+        var beforeVariable = new VariableDefinition(valueType);
         setMethodBody.Variables.Add(beforeVariable);
-        var afterVariable = new VariableDefinition(property.PropertyType);
+        var afterVariable = new VariableDefinition(valueType);
         setMethodBody.Variables.Add(afterVariable);
 
-        index = InsertVariableAssignmentFromCurrentValue(index, property, afterVariable);
+        index = InsertVariableAssignmentFromCurrentValue(index, property, afterVariable); // after = this.Property;
 
-        index = instructions.Insert(index,
-            Instruction.Create(OpCodes.Ldarg_0),
-            Instruction.Create(OpCodes.Ldstr, property.Name),
-            Instruction.Create(OpCodes.Ldloc, beforeVariable),
-            Instruction.Create(OpCodes.Ldloc, afterVariable));
+        index = instructions.Insert(index,                                                // OnPropertyChanged(
+            Instruction.Create(OpCodes.Ldarg_0),                                          //   this
+            Instruction.Create(OpCodes.Ldstr, property.Name),                             //  ,propertyName
+            Instruction.Create(OpCodes.Ldloc, beforeVariable),                            //  ,before
+            Instruction.Create(OpCodes.Ldloc, afterVariable));                            //  ,after
 
-        index = instructions.Insert(index, CallEventInvoker(property).ToArray());
+        index = instructions.Insert(index, CallEventInvoker(property).ToArray());         // )
 
-        return AddBeforeVariableAssignment(index, property, beforeVariable);
-    }
-
-    int AddBeforeAfterInvokerCall(int index, PropertyDefinition property)
-    {
-        var beforeVariable = new VariableDefinition(typeSystem.ObjectReference);
-        setMethodBody.Variables.Add(beforeVariable);
-        var afterVariable = new VariableDefinition(typeSystem.ObjectReference);
-        setMethodBody.Variables.Add(afterVariable);
-
-        index = InsertVariableAssignmentFromCurrentValue(index, property, afterVariable);
-
-        index = instructions.Insert(index,
-            Instruction.Create(OpCodes.Ldarg_0),
-            Instruction.Create(OpCodes.Ldstr, property.Name),
-            Instruction.Create(OpCodes.Ldloc, beforeVariable),
-            Instruction.Create(OpCodes.Ldloc, afterVariable));
-
-        index = instructions.Insert(index, CallEventInvoker(property).ToArray());
-
-        return AddBeforeVariableAssignment(index, property, beforeVariable);
+        return AddBeforeVariableAssignment(index, property, beforeVariable);              // inserts 'before = this.Property;' at start of method
     }
 
     int AddSimpleOnChangedCall(int index, MethodReference methodReference)
