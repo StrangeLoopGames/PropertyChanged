@@ -1,6 +1,3 @@
-using System.Linq;
-using System.Xml;
-
 public partial class ModuleWeaver
 {
     /// <summary>
@@ -11,14 +8,5 @@ public partial class ModuleWeaver
     public bool DisableBeforeAfterForReadOnlyProperties;
 
     /// <summary>Resolves value for <see cref="DisableBeforeAfterForReadOnlyProperties"/> from XML config.</summary>
-    public void ResolveDisableBeforeAfterForReadOnlyPropertiesConfig()
-    {
-        var value = Config?.Attributes("DisableBeforeAfterForReadOnlyProperties")
-            .Select(a => a.Value)
-            .SingleOrDefault();
-        if (value != null)
-        {
-            DisableBeforeAfterForReadOnlyProperties = XmlConvert.ToBoolean(value.ToLowerInvariant());
-        }
-    }
+    public void ResolveDisableBeforeAfterForReadOnlyPropertiesConfig() => SetFromConfigIfAvailable(ref DisableBeforeAfterForReadOnlyProperties, "DisableBeforeAfterForReadOnlyProperties");
 }

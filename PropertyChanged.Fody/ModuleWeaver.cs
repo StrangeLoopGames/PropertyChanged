@@ -13,7 +13,6 @@ public partial class ModuleWeaver: BaseModuleWeaver
         ResolveSuppressWarningsConfig();
         ResolveSuppressOnPropertyNameChangedWarningConfig();
         ResolveEventInvokerName();
-        ResolveAddPropertyChangedInvokerConfig();
         FindCoreReferences();
         FindInterceptor();
         ProcessFilterTypeAttributes();
@@ -36,8 +35,9 @@ public partial class ModuleWeaver: BaseModuleWeaver
         InitEventArgsCache();
         ProcessTypes();
         InjectEventArgsCache();
-        CleanAttributes();
+        if (ShouldCleanAttributes)
+            CleanAttributes();
     }
 
-    public override bool ShouldCleanReference => true;
+    public override bool ShouldCleanReference => ShouldCleanAttributes && !AddPropertyChangedInvoker;
 }

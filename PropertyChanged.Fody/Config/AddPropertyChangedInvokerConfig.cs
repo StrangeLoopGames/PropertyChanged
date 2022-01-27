@@ -1,14 +1,11 @@
-using System.Linq;
-using System.Xml;
-
 public partial class ModuleWeaver
 {
-    public bool AddPropertyChangedInvoker;
+    bool? addPropertyChangedInvoker;
 
-    public void ResolveAddPropertyChangedInvokerConfig()
+    /// <summary>Should it inject INotifyPropertyChangedInvoker interface with <see cref="ProcessPropertyChangedInvoker"/>. If set to <c>true</c> then reference wouldn't be clean and you shouldn't use PrivateAssets='all' in package reference.</summary>
+    public bool AddPropertyChangedInvoker
     {
-        var value = Config?.Attributes("AddPropertyChangedInvoker").Select(a => a.Value).SingleOrDefault();
-        if (value != null)
-            AddPropertyChangedInvoker = XmlConvert.ToBoolean(value.ToLowerInvariant());
+        get => addPropertyChangedInvoker ??= GetConfigBoolean("AddPropertyChangedInvoker") ?? false;
+        set => addPropertyChangedInvoker = value;
     }
 }
