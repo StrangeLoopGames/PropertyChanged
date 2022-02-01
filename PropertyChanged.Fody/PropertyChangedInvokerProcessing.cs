@@ -1,13 +1,15 @@
+using Fody;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 
 public partial class ModuleWeaver
 {
+    const string invokePropertyChangedMethodName = "InvokePropertyChanged";
+
     /// <summary>Imports <see cref="MethodReference"/> for <c>PropertyChanged.INotifyPropertyChangedInvoker.InvokePropertyChanged</c> if config option 'AddPropertyChangedInvoker' set to true in Fody.PropertyChanged config.</summary>
-    MethodReference ImportInvokePropertyChangedInterfaceMethodReference()
+    MethodReference ImportInvokePropertyChangedInterfaceMethodReference(TypeReference invokerType)
     {
-        var manualNotifyInterface = CecilUtils.MakeTypeReference("PropertyChanged.INotifyPropertyChangedInvoker", ModuleDefinition.GetAssemblyReference("PropertyChanged")); // make type reference for interface
-        var invokePropertyChangedMethod = new MethodReference("InvokePropertyChanged", TypeSystem.VoidReference, manualNotifyInterface);                                     // make method reference for InvokePropertyChanged
+        var invokePropertyChangedMethod = new MethodReference(invokePropertyChangedMethodName, TypeSystem.VoidReference, invokerType);                                       // make method reference for InvokePropertyChanged
         invokePropertyChangedMethod.Parameters.Add(new ParameterDefinition("eventArgs", ParameterAttributes.None, PropertyChangedEventArgsReference));                       // add PropertyChangedEventArgs parameter
         return ModuleDefinition.ImportReference(invokePropertyChangedMethod);                                                                                                // import for the current module
     }
@@ -15,8 +17,10 @@ public partial class ModuleWeaver
     /// <summary>Processes <see cref="NotifyNodes"/> for <c>INotifyPropertyChangedInvoker</c> auto-implementation if config option 'AddPropertyChangedInvoker' set to true in Fody.PropertyChanged config..</summary>
     void ProcessPropertyChangedInvoker()
     {
-        if (!AddPropertyChangedInvoker) return;
-        var invokePropertyChangedMethod = ImportInvokePropertyChangedInterfaceMethodReference();
+        if (PropertyChangedInvoker is not {} invokerType) return;
+        var invokePropertyChangedMethod = ImportInvokePropertyChangedInterfaceMethodReference(invokerType);
+        if (invokePropertyChangedMethod.Resolve() == null)
+            throw new WeavingException($"Method {invokePropertyChangedMethod} doesn't exists on external notification interface {invokerType.FullName}");
         foreach (var typeNode in NotifyNodes)                                                             // go through all base nodes implementing IPropertyChanged
         {
             var type = typeNode.TypeDefinition;

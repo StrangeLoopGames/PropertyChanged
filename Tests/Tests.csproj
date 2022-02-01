@@ -37,5 +37,6 @@
     <ProjectReference Include="..\TestAssemblies\AssemblyWithInheritance\AssemblyWithInheritance.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithPropertyAttributes\AssemblyWithPropertyAttributes.csproj" />
     <ProjectReference Include="..\TestAssemblies\AssemblyWithDisabledBeforeAfterForReadOnlyProperties\AssemblyWithDisabledBeforeAfterForReadOnlyProperties.csproj" />
+    <ProjectReference Include="..\TestAssemblies\AssemblyWithCustomInvokerInterceptor\AssemblyWithCustomInvokerInterceptor.csproj" />
   </ItemGroup>
 </Project>
