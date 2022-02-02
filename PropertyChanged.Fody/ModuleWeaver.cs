@@ -40,5 +40,5 @@ public partial class ModuleWeaver: BaseModuleWeaver
             CleanAttributes();
     }
 
-    public override bool ShouldCleanReference => ShouldCleanAttributes && !AddPropertyChangedInvoker;
+    public override bool ShouldCleanReference => ShouldCleanAttributes && PropertyChangedInvokerType != PropertyChangedInvokerType.Default;
 }

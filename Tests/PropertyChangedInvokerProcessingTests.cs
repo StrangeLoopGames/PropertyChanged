@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Xml.Linq;
 using Fody;
 using PropertyChanged;
 using Xunit;
@@ -9,7 +10,8 @@ public class PropertyChangedInvokerProcessingTests
     [Fact]
     public void ShouldImplementINotifyPropertyChangedInvokerInterfaceWhenConfigEnabled()
     {
-        var weaver = new ModuleWeaver { AddPropertyChangedInvoker = true };
+        var xElement = XElement.Parse("<PropertyChanged AddPropertyChangedInvoker='true'/>");
+        var weaver = new ModuleWeaver { Config = xElement };
         var testResult = weaver.ExecuteTestRun("AssemblyToProcess.dll");
         var instance = testResult.GetInstance("ClassParentWithProperty");
         Assert.True(instance is INotifyPropertyChangedInvoker);

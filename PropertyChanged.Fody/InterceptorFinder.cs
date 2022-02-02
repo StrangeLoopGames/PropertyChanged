@@ -57,21 +57,18 @@ Intercept(object target, Action firePropertyChanged, string propertyName, object
             return true;
         }
 
-        if (AddPropertyChangedInvoker)
+        if (IsInvokerSingleStringInterceptionMethod(methodDefinition)) // Intercept(INotifyPropertyChangedInvoker, string) ?
         {
-            if (IsInvokerSingleStringInterceptionMethod(methodDefinition)) // Intercept(INotifyPropertyChangedInvoker, string) ?
-            {
-                usesInvoker = true;
-                interceptorType = InvokerTypes.String;
-                return true;
-            }
+            usesInvoker = true;
+            interceptorType = InvokerTypes.String;
+            return true;
+        }
 
-            if (IsInvokerBeforeAfterInterceptionMethod(methodDefinition))  // Intercept(INotifyPropertyChangedInvoker, object, object) ?
-            {
-                usesInvoker = true;
-                interceptorType = InvokerTypes.BeforeAfter;
-                return true;
-            }
+        if (IsInvokerBeforeAfterInterceptionMethod(methodDefinition))  // Intercept(INotifyPropertyChangedInvoker, object, object) ?
+        {
+            usesInvoker = true;
+            interceptorType = InvokerTypes.BeforeAfter;
+            return true;
         }
 
         interceptorType = default;
@@ -105,7 +102,7 @@ Intercept(object target, Action firePropertyChanged, string propertyName, object
     {
         var parameters = method.Parameters;
         return parameters.Count == 2
-               && parameters[0].ParameterType.FullName == "PropertyChanged.INotifyPropertyChangedInvoker"
+               && parameters[0].ParameterType.FullName == PropertyChangedInvoker?.FullName
                && parameters[1].ParameterType.FullName == "System.String";
     }
 
@@ -114,7 +111,7 @@ Intercept(object target, Action firePropertyChanged, string propertyName, object
     {
         var parameters = method.Parameters;
         return parameters.Count == 4
-               && parameters[0].ParameterType.FullName == "PropertyChanged.INotifyPropertyChangedInvoker"
+               && parameters[0].ParameterType.FullName == PropertyChangedInvoker?.FullName
                && parameters[1].ParameterType.FullName == "System.String"
                && parameters[2].ParameterType.FullName == "System.Object"
                && parameters[3].ParameterType.FullName == "System.Object";
