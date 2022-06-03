@@ -56,6 +56,8 @@ public class PropertyWeaver
 
     void InjectAtIndex(int index)
     {
+        if (moduleWeaver.ModuleExtensions is { } moduleExtensions)
+            index = moduleExtensions.HandleFieldAssign(instructions, index, propertyData);
         index = AddIsChangedSetterCall(index);
 
         foreach (var alsoNotifyForDefinition in propertyData.AlsoNotifyFor.Distinct())

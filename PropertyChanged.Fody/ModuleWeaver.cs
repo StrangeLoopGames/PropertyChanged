@@ -15,6 +15,7 @@ public partial class ModuleWeaver: BaseModuleWeaver
         ResolveEventInvokerName();
         ResolveDisableBeforeAfterForReadOnlyPropertiesConfig();
         FindCoreReferences();
+        InitExtensions();
         FindInterceptor();
         ProcessFilterTypeAttributes();
         BuildTypeNodes();
