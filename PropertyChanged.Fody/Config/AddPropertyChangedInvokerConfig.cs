@@ -1,7 +1,5 @@
 #nullable enable
 
-using System;
-using System.Xml;
 using Mono.Cecil;
 
 public enum PropertyChangedInvokerType
@@ -36,15 +34,10 @@ public partial class ModuleWeaver
             if (propertyChangedInvokerResolved) return propertyChangedInvoker;
             if (GetConfigValue("AddPropertyChangedInvoker") is { } value)                           // check if value presents in the config
             {
-                try
-                {
-                    if (XmlConvert.ToBoolean(value))                                                // if value is boolean and is true then should use standard interface
-                        propertyChangedInvoker = new TypeReference("PropertyChanged", "INotifyPropertyChangedInvoker", null, ModuleDefinition.GetAssemblyReference(PropertyChangedAssemblyName));
-                }
-                catch (FormatException)
-                {
+                if (!TryParseBoolean(value, out var addPropertyChangedInvoker))                     
                     propertyChangedInvoker = CecilUtils.MakeTypeReference(value, ModuleDefinition); // if failed to parse as boolean then assume it is an assembly qualified type name
-                }
+                else if (addPropertyChangedInvoker)                                                 // else if value is boolean and is true then use standard interface
+                    propertyChangedInvoker = new TypeReference("PropertyChanged", "INotifyPropertyChangedInvoker", null, ModuleDefinition.GetAssemblyReference(PropertyChangedAssemblyName));
             }
             propertyChangedInvokerResolved = true;
             return propertyChangedInvoker;

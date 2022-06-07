@@ -15,4 +15,11 @@ public partial class ModuleWeaver
         if (GetConfigBoolean(optionName) is {} value)
             option = value;
     }
+
+    /// <summary>Tries to parse <paramref name="xmlValue"/> as boolean. Can't use <see cref="XmlConvert.ToBoolean"/> because it throws exception if value can't be parsed.</summary>
+    bool TryParseBoolean(string xmlValue, out bool value)
+    {
+        (var result, value) = xmlValue.ToLowerInvariant() switch { "1" or "true" => (true, true), "0" or "false" => (true, false), _ => (false, false) };
+        return result;
+    }
 }
