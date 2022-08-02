@@ -2,7 +2,7 @@
 <Project>
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>3.4.1-slg.6</Version>
+    <Version>3.4.2-slg.1</Version>
     <LangVersion>latest</LangVersion>
     <NoWarn>NU5118</NoWarn>
   </PropertyGroup>
