@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
+using System.Text.RegularExpressions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using Mono.Cecil.Rocks;
 
 public static class CecilExtensions
 {
+    static readonly Regex BackingFieldRegex = new("^<(\\w+)>k__BackingField$", RegexOptions.Compiled);
+
     public static string GetName(this PropertyDefinition propertyDefinition)
     {
         return $"{propertyDefinition.DeclaringType.FullName}.{propertyDefinition.Name}";
@@ -213,5 +215,20 @@ public static class CecilExtensions
         }
     }
 
+    /// <summary>Tries to get property name for <paramref name="field"/> if it is a backing field.</summary>
+    public static bool TryGetBackingFieldPropertyName(this FieldDefinition field, out string propertyName)
+    {
+        var match = BackingFieldRegex.Match(field.Name);
+        if (!match.Success)
+        {
+            propertyName = null;
+            return false;
+        }
+        
+        propertyName = match.Groups[1].Value;
+        return true;
+    }
 
+    /// <summary>Checks if <paramref name="field"/> is a backing field.</summary>
+    public static bool IsBackingField(this FieldReference field) => BackingFieldRegex.IsMatch(field.Name);
 }

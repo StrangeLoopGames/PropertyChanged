@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Mono.Cecil.Rocks;
+using PropertyChanged.Fody;
 
 public partial class ModuleWeaver
 {
@@ -18,7 +19,9 @@ public partial class ModuleWeaver
             }
 
             WriteDebug("\t" + node.TypeDefinition.FullName);
-
+            
+            new ConstructorWeaver(node).Execute();
+            
             foreach (var propertyData in node.PropertyDatas.Values)
             {
                 var body = propertyData.PropertyDefinition.SetMethod.Body;
