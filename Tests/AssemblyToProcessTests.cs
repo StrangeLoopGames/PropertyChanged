@@ -36,6 +36,8 @@ public class AssemblyToProcessTests
     [Theory]
     [InlineData("ClassWithInlineInitializedAutoProperties",
         "Test", "Test2", true, new[] { "IsChanged", "Property1", "Property2" })]
+    [InlineData("ClassWithInlineInitializedAutoPropertiesWithoutBase",
+        "Test", "Test2", true, new[] { "IsChanged", "Property1", "Property2" })]
     [InlineData("ClassWithExplicitInitializedAutoProperties",
         "Test", "Test2", true, new[] { "IsChanged", "Property1", "Property2" })]
     [InlineData("ClassWithExplicitInitializedAutoPropertiesDerivedWeakDesign",

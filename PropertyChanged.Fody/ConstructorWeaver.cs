@@ -20,7 +20,7 @@ public readonly struct ConstructorWeaver
     /// <summary>Executes weaver for pre-configured <see cref="typeNode"/>.</summary>
     public void Execute()
     {
-        foreach (var constructor in typeNode.TypeDefinition.GetConstructors())
+        foreach (var constructor in typeNode.TypeDefinition.GetConstructors().Where(ctr => !ctr.IsStatic))
             WeaveConstructor(constructor);
     }
 
@@ -75,8 +75,7 @@ public readonly struct ConstructorWeaver
     }
 
     /// <summary>Checks if <paramref name="instruction"/> is a constructor call.</summary>
-    bool IsConstructorCall(Instruction instruction) => instruction.OpCode == OpCodes.Call && instruction.Operand is MethodDefinition { IsConstructor: true };
-
+    bool IsConstructorCall(Instruction instruction) => instruction.OpCode == OpCodes.Call && instruction.Operand is MethodReference { Name: ".ctor" };
 
     /// <summary>Process constructor call. Basically inserts all <paramref name="movedInstructions"/> after constructor call.</summary>
     void ProcessConstructorCall(Collection<Instruction> instructions, int currentIndex, List<Instruction> movedInstructions)
