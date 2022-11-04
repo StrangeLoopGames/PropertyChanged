@@ -46,6 +46,15 @@ public static class InstructionListExtensions
         return index;
     }
 
+    /// <summary>Shortcut for Stloc and Ldloc opcodes with new variable creation.</summary>
+    public static int InsertStoreAndLoadVariable(this Collection<Instruction> collection, int index, TypeReference variableType, out VariableDefinition variable)
+    {
+        variable = new VariableDefinition(variableType);
+        collection.Insert(index++, Instruction.Create(OpCodes.Stloc, variable));
+        collection.Insert(index++, Instruction.Create(OpCodes.Ldloc, variable));
+        return index;
+    }
+
     /// <summary>
     /// Inserts default value of <paramref name="valueType"/> at <paramref name="index"/> and returns first index after last inserted instruction (only works with struct types, should be used via <see cref="InsertDefault"/>).
     /// If <paramref name="valueType"/> is non-primitive value type then <paramref name="variable"/> will be either created and initialized or reused if already exists. If you need to insert multiple values of same type then you can reuse variable.

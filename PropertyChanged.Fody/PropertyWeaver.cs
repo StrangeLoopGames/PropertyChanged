@@ -145,7 +145,8 @@ public class PropertyWeaver
     int AddEventInvokeCall(int index, List<OnChangedMethod> onChangedMethods, PropertyDefinition property)
     {
         index = AddOnChangedMethodCalls(index, onChangedMethods, property);
-        if (propertyData.ParentType.NoOwnNotifyProperties.Contains(property))
+        var explicitNotifyProperties = propertyData.ParentType.ExplicitNotifyProperties;
+        if (explicitNotifyProperties != null && !explicitNotifyProperties.Contains(property))
             return index;
 
         if (propertyData.AlreadyNotifies.Contains(property.Name))
@@ -233,7 +234,7 @@ public class PropertyWeaver
             Instruction.Create(OpCodes.Ldarg_0),
             Instruction.Create(OpCodes.Ldstr, property.Name));
 
-        return instructions.Insert(index, CallEventInvoker(property).ToArray());
+        return instructions.Insert(index, CallEventInvoker(typeNode, property.PropertyType).ToArray());
     }
 
     int AddPropertyChangedArgInvokerCall(int index, PropertyDefinition property)
@@ -242,7 +243,7 @@ public class PropertyWeaver
             Instruction.Create(OpCodes.Ldarg_0),
             Instruction.Create(OpCodes.Ldsfld, moduleWeaver.EventArgsCache.GetEventArgsField(property.Name)));
 
-        return instructions.Insert(index, CallEventInvoker(property).ToArray());
+        return instructions.Insert(index, CallEventInvoker(typeNode, property.PropertyType).ToArray());
     }
 
     int AddSenderPropertyChangedArgInvokerCall(int index, PropertyDefinition property)
@@ -252,7 +253,7 @@ public class PropertyWeaver
             Instruction.Create(OpCodes.Ldarg_0),
             Instruction.Create(OpCodes.Ldsfld, moduleWeaver.EventArgsCache.GetEventArgsField(property.Name)));
 
-        return instructions.Insert(index, CallEventInvoker(property).ToArray());
+        return instructions.Insert(index, CallEventInvoker(typeNode, property.PropertyType).ToArray());
     }
 
     int AddBeforeAfterInvokerCall(int index, PropertyDefinition property, TypeReference valueType)
@@ -270,7 +271,7 @@ public class PropertyWeaver
             if (defaultValue != null)
                 setMethodBody.Variables.Add(defaultValue);
 
-            return instructions.Insert(index, CallEventInvoker(property).ToArray());         // )
+            return instructions.Insert(index, CallEventInvoker(typeNode, property.PropertyType).ToArray()); // )
         }
 
         // Default weaving with before/after
@@ -287,7 +288,7 @@ public class PropertyWeaver
             Instruction.Create(OpCodes.Ldloc, beforeVariable),                            //  ,before
             Instruction.Create(OpCodes.Ldloc, afterVariable));                            //  ,after
 
-        index = instructions.Insert(index, CallEventInvoker(property).ToArray());         // )
+        index = instructions.Insert(index, CallEventInvoker(typeNode, valueType).ToArray()); // )
 
         return AddBeforeVariableAssignment(index, property, beforeVariable);              // inserts 'before = this.Property;' at start of method
     }
@@ -348,20 +349,20 @@ public class PropertyWeaver
         return index + i.Length;
     }
 
-    public IEnumerable<Instruction> CallEventInvoker(PropertyDefinition propertyDefinition)
+    public static IEnumerable<Instruction> CallEventInvoker(TypeNode typeNode, TypeReference valueType)
     {
         var method = typeNode.EventInvoker.MethodReference;
 
         if (method.HasGenericParameters)
         {
             var genericMethod = new GenericInstanceMethod(method);
-            genericMethod.GenericArguments.Add(propertyDefinition.PropertyType);
+            genericMethod.GenericArguments.Add(valueType);
             method = genericMethod;
         }
 
         var instructionList = new List<Instruction> { Instruction.Create(OpCodes.Callvirt, method) };
 
-        if (method.ReturnType.FullName != typeSystem.VoidReference.FullName)
+        if (method.ReturnType.MetadataType != MetadataType.Void)
         {
             instructionList.Add(Instruction.Create(OpCodes.Pop));
         }

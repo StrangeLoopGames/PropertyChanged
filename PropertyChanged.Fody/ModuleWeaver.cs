@@ -29,7 +29,7 @@ public partial class ModuleWeaver: BaseModuleWeaver
         DetectIlGeneratedByDependency();
         ProcessDependsOnAttributes();
         WalkPropertyData();
-        ProcessNoOwnNotify();
+        ProcessExplicitNotify();
         CheckForWarnings();
         ProcessOnChangedMethods();
         CheckForStackOverflow();
