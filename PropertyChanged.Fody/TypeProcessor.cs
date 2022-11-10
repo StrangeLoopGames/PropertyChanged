@@ -20,7 +20,7 @@ public partial class ModuleWeaver
 
             WriteDebug("\t" + node.TypeDefinition.FullName);
             
-            new ConstructorWeaver(node).Execute();
+            new ConstructorWeaver(this, node).Execute();
             
             foreach (var propertyData in node.PropertyDatas.Values)
             {

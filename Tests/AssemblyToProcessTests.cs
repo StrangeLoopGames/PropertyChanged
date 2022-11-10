@@ -35,7 +35,7 @@ public class AssemblyToProcessTests
 
     [Theory]
     [InlineData("ClassWithInlineInitializedAutoProperties",
-        "Test", "Test2", true, new[] { "IsChanged", "Property1", "Property2" })]
+        "Test", "Test2", true, new[] { "IsChanged", "Property1", "Property2", "Property3" })]
     [InlineData("ClassWithInlineInitializedAutoPropertiesWithoutBase",
         "Test", "Test2", true, new[] { "IsChanged", "Property1", "Property2" })]
     [InlineData("ClassWithExplicitInitializedAutoProperties",
@@ -64,7 +64,7 @@ public class AssemblyToProcessTests
         var actualPropertyChangedCalls = (IList<string>)instance.PropertyChangedCalls;
         Debug.WriteLine("PropertyChanged calls: " + string.Join(", ", actualPropertyChangedCalls));
 
-        Assert.True(propertyChangedCallsInConstructor.SequenceEqual(actualPropertyChangedCalls));
+        Assert.Equal(propertyChangedCallsInConstructor, actualPropertyChangedCalls);
         Assert.Equal(isChangedStateAfterConstructor, instance.IsChanged);
 
         var initial = isChangedStateAfterConstructor ? 1 : 2;

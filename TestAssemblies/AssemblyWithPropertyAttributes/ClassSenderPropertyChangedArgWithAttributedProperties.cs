@@ -4,11 +4,10 @@ using System.ComponentModel;
 using PropertyChanged;
 
 /// <summary>Test class for processors working with property attributes (i.e. NoOwnNotifyProcessing).</summary>
-public class ClassWithAttributedProperties : INotifyPropertyChanged
+public class ClassSenderPropertyChangedArgWithAttributedProperties : INotifyPropertyChanged
 {
-    public List<string>                       Notifications   = new List<string>();
+    public List<string>                       Notifications = new();
     public event PropertyChangedEventHandler? PropertyChanged;
-
 
     [DisplayName]                        public string?  DisplayName             { get; set; }
     [Description]                        public string?  Description             { get; set; }
@@ -20,5 +19,5 @@ public class ClassWithAttributedProperties : INotifyPropertyChanged
 
     public void OnNoOwnNotifyChanged() => Notifications.Add("method:NoOwnNotify");
 
-    void OnPropertyChanged(string name) => Notifications.Add($"event:{name}");
+    void OnPropertyChanged(object sender, PropertyChangedEventArgs args) => Notifications.Add($"event:{args.PropertyName}");
 }
